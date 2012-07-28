@@ -45,4 +45,6 @@ euskalMap CLI is the reference implementation for the euskalMap API.
 	 * [#37] 'I am writing the euskalMap documentation' on AA-2
 	eM $ report 37 "I find this message very offensive."
 	Abuse report received.
+	eM $ show reports
+	* [#3] <Message #37 'I am writing the euskalMap documentation'> 'I find this message very offensive.'
 	eM $ quit
