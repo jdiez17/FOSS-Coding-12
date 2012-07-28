@@ -48,3 +48,35 @@ def get_near(letters, numbers, radius):
 		compute(locations)
 		
 	return locations
+	
+
+def trending_order(dataset):
+	def trending(x, y):
+		if x['comments'] > y['comments']:
+			return -1
+		elif x['comments'] == y['comments']:
+			return 0
+		else:
+			return 1
+	
+	dataset.sort(trending)
+	
+	return dataset
+
+def chrono_order(dataset):
+	def chrono(x, y):
+		if x['id'] > y['id']:
+			return -1
+		elif x['id'] == y['id']:
+			return 0
+		else:
+			return 1
+	
+	if len(dataset) == 0:
+		return dataset
+	if "id" not in dataset[0].keys():
+		return dataset # fail gracefully
+		
+	dataset.sort(chrono)
+	
+	return dataset

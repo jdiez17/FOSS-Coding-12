@@ -2,7 +2,7 @@ from flask import Flask, request
 from flask.ext.sqlalchemy import SQLAlchemy
 from euskalmap.database import db_session, db_unique
 from euskalmap.models import Message, Location, AbuseNotice, Comment
-from euskalmap.utils import get_near
+from euskalmap.utils import get_near, trending_order, chrono_order
 
 from sqlalchemy import or_, and_
 import json, datetime
@@ -22,9 +22,14 @@ def output_data(format, data):
 		return "Unsupported format", 400
 	
 	return formatters[format](data)
-	
-def filter_and_output(data, filter, format, filter_only=False, order_by=None):
-	new_data = [i.serialize() for i in data.filter(filter).order_by(order_by)]
+
+def filter_and_output(data, filter, format, filter_only=False, reorder=None):
+	new_data = [i.serialize() for i in data.filter(filter)]
+	if reorder != None:
+		new_data = reorder(new_data)
+	else:
+		new_data = chrono_order(new_data)
+		
 	return output_data(format, new_data) if not filter_only else new_data
 
 def get_filtered_messages(format, filter, source, filter_only=False):
@@ -34,11 +39,21 @@ def get_filtered_messages(format, filter, source, filter_only=False):
 					'trending': Message.comments.any()
 				}
 	
+	orders =	{
+					'trending': trending_order,
+				}
+	
 	if not filter in filters.keys():
 		return "Unsupported filter", 400
 	
 	chosen_filter = filters[filter]
-	return filter_and_output(source, chosen_filter, format, filter_only)
+	
+	order = None
+	
+	if filter in orders.keys():
+		order = orders[filter]
+
+	return filter_and_output(source, chosen_filter, format, filter_only, order)
 
 def messages_by_location(format, letters, numbers, filter):
 	l = db_unique(Location, letters=letters, numbers=numbers)
@@ -120,7 +135,7 @@ def send_message(format):
 
 @app.route('/<format>/messages/near/<letters>-<int:numbers>')
 def messages_near(format, letters, numbers):
-	return get_messages_near(format, letters, numbers)
+	return get_messages_near(format, letters, numbers, 2)
 
 @app.route('/<format>/messages/near/<letters>-<int:numbers>/<int:radius>')
 def messages_near_radius(format, letters, numbers, radius):
