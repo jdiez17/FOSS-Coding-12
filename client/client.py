@@ -165,9 +165,7 @@ commands = 	{
 				'report': report,
 				'quit': quit,
 			}
-
-show(['messages', 'AK-91'])			
-			
+	
 while True:
 	command = shlex.split(raw_input("eM $ "))
 	
