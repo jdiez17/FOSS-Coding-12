@@ -122,7 +122,8 @@ def send_message(format):
 					return str(e), 400
 		
 		if 'timestamp' in request.form.keys():
-			d = datetime.datetime.fromtimestamp(int(request.form['timestamp']))
+			if request.form['timestamp'] 
+				d = datetime.datetime.fromtimestamp(int(request.form['timestamp']))
 		
 		try:
 			m = Message(message, l, d)

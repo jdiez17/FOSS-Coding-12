@@ -1,5 +1,5 @@
 [api]
-base = http://localhost:5000/json/ # trailing slash please
+base = http://localhost:5000/json/
 
 [party]
 rows = 2
