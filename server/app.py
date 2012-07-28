@@ -22,7 +22,7 @@ def output_data(format, data):
 	return formatters[format](data)
 	
 def filter_and_output(data, filter, format):
-	new_data = [i.serialize() for i in data.filter(filter)]
+	new_data = [i.serialize() for i in data.filter(filter).order_by("id desc")]
 	
 	return output_data(format, new_data)	
 
