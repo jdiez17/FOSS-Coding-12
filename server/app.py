@@ -1,7 +1,7 @@
 from flask import Flask, request
 from flask.ext.sqlalchemy import SQLAlchemy
 from euskalmap.database import db_session, db_unique
-from euskalmap.models import Message, Location
+from euskalmap.models import Message, Location, AbuseNotice
 
 from sqlalchemy import or_, and_
 import json, datetime
@@ -106,6 +106,32 @@ def send_message(format):
 			
 		return "Done."
 
+@app.route('/<format>/report', methods=['POST'])
+def add_report(format):
+	id = 0
+	message = ""
+	
+	if "id" not in request.form.keys():
+		return "You must specify which message to report.", 400
+	
+	if "message" in request.form.keys():
+		message = request.form['message']
+		
+	id = int(request.form['id'])
+
+	try:
+		m = Message.query.filter_by(id=id).one()
+	except Exception, e:
+		return str(e), 400
+		
+	r = AbuseNotice(m, message)
+	db_session.add(r)
+	
+	try:
+		db_session.commit()
+		return "Abuse report stored."
+	except:
+		return "DB error", 500
 		
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', debug=True)

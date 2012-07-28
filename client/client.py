@@ -120,12 +120,32 @@ def map(arg):
 					locs[i].append(1)
 				
 	prettyprint_map(locs)
+
+def report(arg):
+	base_report = APIBASE + "report"
+	
+	if int(arg[0]) == 0:
+		print "You must choose a message to report."
+	else:
+		message = ""
+		id = arg[0]
+		if len(arg) == 2:
+			message = arg[1]
+		
+		payload = {'message': message, 'id': id}
+		
+		response = requests.post(base_report, data=payload)
+		if response.status_code != 200:
+			return request_error(response.status_code, response.text)
+		
+		print "Abuse report received."
 	
 commands = 	{
 				'help': help,
 				'show': show,
 				'send': send,
 				'map': map,
+				'report': report,
 				'quit': quit,
 			}
 
