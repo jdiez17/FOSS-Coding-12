@@ -1,9 +1,12 @@
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-engine = create_engine('mysql://euskalmap:QdhfR64JKzY73FcL@localhost/euskalmap', convert_unicode=True)
+from config import config
+
+user, password, host, database = config.get('database', 'user'), config.get('database', 'pw'), config.get('database', 'host'), config.get('database', 'database')
+
+engine = create_engine('mysql://' + user + ':' + password + '@' + host + '/' + database, convert_unicode=True)
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))

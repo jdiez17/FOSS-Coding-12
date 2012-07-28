@@ -1,0 +1,11 @@
+[database]
+user = euskalmap
+password = euskalmap
+database = euskalmap
+host = localhost
+
+[party]
+rows = 2
+blocks_per_row = 5
+rows_per_block = 2
+cols_per_block = 2

@@ -63,7 +63,6 @@ def messages_by_location(format, letters, numbers, filter):
 def generate_location_filter(locs):
 	first = True
 	for loc in locs:
-		print loc[0] + "-" + str(loc[1])
 		l = db_unique(Location, letters=loc[0], numbers=loc[1])
 		local_filter = Message.location == l
 		if first:
