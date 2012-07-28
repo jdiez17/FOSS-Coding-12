@@ -107,13 +107,20 @@ def send(arg):
 
 		letters = None
 		numbers = 0
+		timestamp = 0
+		message = arg[0]
 		
-		message = arg[0] 
 		if len(arg) > 1:
 			if len(arg[1]) == 5:
 				letters, numbers = get_location(arg[1])
-			
-		payload = {'message': message, 'location_letters': letters, 'location_numbers': numbers}
+				if len(arg) == 3:
+					timestamp = int(arg[2])
+			else:
+				timestamp = int(arg[1])
+				if len(arg) == 3:
+					letters, numbers = get_location(arg[2])
+					
+		payload = {'message': message, 'location_letters': letters if letters != None else "", 'location_numbers': numbers, 'timestamp': timestamp}
 		response = requests.post(base_send, data=payload)
 		
 		if response.status_code != 200:

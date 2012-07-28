@@ -99,10 +99,11 @@ def send_message(format):
 		d = None
 		
 		if 'location_letters' in request.form.keys():
-			try:
-				l = db_unique(Location, letters=request.form['location_letters'], numbers=int(request.form['location_numbers']))
-			except Exception, e:
-				return str(e), 400
+			if request.form['location_letters']:
+				try:
+					l = db_unique(Location, letters=request.form['location_letters'], numbers=int(request.form['location_numbers']))
+				except Exception, e:
+					return str(e), 400
 		
 		if 'timestamp' in request.form.keys():
 			d = datetime.datetime.fromtimestamp(int(request.form['timestamp']))

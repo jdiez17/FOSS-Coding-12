@@ -12,8 +12,9 @@ euskalMap CLI is the reference implementation for the euskalMap API.
 	* ```show messages near location [radius=1]``` - Shows the messages whose location is contained in a square with radius ```radius```. See API documentation for more information.
 
 	* ```show reports``` - shows abuse reports.
-* ```send [message [location]]``` - Sends a message whose location can be specified by the optional parameter ```location```.
+* ```send [message [location [timestamp]]]``` - Sends a message whose location can be specified by the optional parameter ```location```.
 	* ```send "I am writing the documentation for euskalMap" AK-91```
+	* ```send "This is a message with timestamp" 1343481862```
 
 * ```map``` - Prints a map of the party site, with the count of messages per location.
 
