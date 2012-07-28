@@ -19,5 +19,7 @@ def db_unique(model, **kwargs):
     if instance:
         return instance
     else:
-        instance = model(**kwargs)
-        return instance
+		instance = model(**kwargs)
+		db_session.add(instance)
+		db_session.commit()
+		return instance

@@ -3,6 +3,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from euskalmap.database import db_session, db_unique
 from euskalmap.models import Message, Location
 
+from sqlalchemy import or_, and_
 import json, datetime
 
 app = Flask(__name__)
@@ -21,12 +22,11 @@ def output_data(format, data):
 	
 	return formatters[format](data)
 	
-def filter_and_output(data, filter, format):
-	new_data = [i.serialize() for i in data.filter(filter).order_by("id desc")]
-	
-	return output_data(format, new_data)	
+def filter_and_output(data, filter, format, filter_only=False):
+	new_data = [i.serialize() for i in data.filter(filter)]
+	return output_data(format, new_data) if not filter_only else new_data
 
-def get_filtered_messages(format, filter, source):
+def get_filtered_messages(format, filter, source, filter_only=False):
 	filters = 	{
 					'has_location': Message.location != None,
 					'has_timestamp': Message.timestamp != None,
@@ -36,7 +36,11 @@ def get_filtered_messages(format, filter, source):
 		return "Unsupported filter", 400
 	
 	chosen_filter = filters[filter]
-	return filter_and_output(source, chosen_filter, format)
+	return filter_and_output(source, chosen_filter, format, filter_only)
+
+def messages_by_location(format, letters, numbers, filter):
+	l = db_unique(Location, letters=letters, numbers=numbers)
+	return get_filtered_messages(format, filter, l.messages)
 	
 @app.route('/<format>/messages')
 def all_messages(format):
@@ -53,9 +57,28 @@ def location_messages(format, letters, numbers):
 
 @app.route('/<format>/messages/<letters>-<int:numbers>/<filter>')
 def location_messages_filtered(format, letters, numbers, filter):
-	l = db_unique(Location, letters=letters, numbers=numbers)
-	return get_filtered_messages(format, filter, l.messages)
+	return messages_by_location(format, letters, numbers, filter)
 
+@app.route('/<format>/messages/bulk', methods=['POST'])
+def get_bulk_messages(format):
+	if "locations" not in request.form.keys():
+		return "You must supply some locations.", 400
+	else:
+		locs = json.loads(request.form['locations'])
+		
+		first = True
+		for loc in locs:
+			l = db_unique(Location, letters=loc[0], numbers=loc[1])
+			local_filter = Message.location == l
+			if first:
+				filter = local_filter
+				first = False
+			else:
+				filter = or_(filter, local_filter)
+		
+		return filter_and_output(Message.query, filter, format)
+	
+	
 @app.route('/<format>/send', methods=['POST'])
 def send_message(format):
 	if not 'message' in request.form.keys():
@@ -82,6 +105,7 @@ def send_message(format):
 			return str(e), 400
 			
 		return "Done."
-	
+
+		
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', debug=True)

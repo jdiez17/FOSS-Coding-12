@@ -1,5 +1,5 @@
 import requests, shlex, sys, json
-from utils import message_printer, get_location
+from utils import message_printer, get_location, gen_map, prettyprint_map
 
 APIBASE = "http://s.jdiez.me:5000/json/"
 
@@ -91,8 +91,6 @@ def send(arg):
 				letters, numbers = get_location(arg[1])
 			
 		payload = {'message': message, 'location_letters': letters, 'location_numbers': numbers}
-		
-		print payload
 		response = requests.post(base_send, data=payload)
 		
 		if response.status_code != 200:
@@ -101,10 +99,33 @@ def send(arg):
 			
 		print "Sent OK!" 
 
+def map(arg):
+	locs = gen_map()
+	
+	base_map = APIBASE + "messages/bulk"
+	send_locations = {'locations': json.dumps(locs)}	
+	response = requests.post(base_map, data=send_locations)
+	
+	if response.status_code != 200:
+		request_error(response.status_code, response.text)
+		return
+		
+	response = json.loads(response.text)
+	for item in response:
+		for i in range(0, len(locs)):
+			if locs[i][0] == item['location']['letters'] and locs[i][1] == int(item['location']['numbers']):
+				if len(locs[i]) == 3:
+					locs[i][2] += 1
+				else:
+					locs[i].append(1)
+				
+	prettyprint_map(locs)
+	
 commands = 	{
 				'help': help,
 				'show': show,
 				'send': send,
+				'map': map,
 				'quit': quit,
 			}
 
