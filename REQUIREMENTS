@@ -1,11 +1,11 @@
 API Server
 ==========
 
-* python-setuptools
+* python-setuptools (python_distribute in Arch Linux)
 * flask (easy_install flask)
 * mysql server 
-* flask.ext.sqlalchemy
-* python-mysqldb
+* flask.ext.sqlalchemy (easy_install flask-sqlalchemy)
+* python-mysqldb (mysql_python on Arch Linux)
 
 CLI consumer
 =============
