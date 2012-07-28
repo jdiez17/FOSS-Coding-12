@@ -2,7 +2,7 @@ from flask import Flask, request
 from flask.ext.sqlalchemy import SQLAlchemy
 from euskalmap.database import db_session, db_unique
 from euskalmap.models import Message, Location, AbuseNotice, Comment
-from euskalmap.utils import get_near, trending_order, chrono_order
+from euskalmap.utils import get_near, trending_order, chrono_order, random_order
 
 from sqlalchemy import or_, and_
 import json, datetime
@@ -41,12 +41,13 @@ def get_filtered_messages(format, filter, source, filter_only=False):
 	
 	orders =	{
 					'trending': trending_order,
+					'random': random_order
 				}
 	
 	if not filter in filters.keys():
-		return "Unsupported filter", 400
-	
-	chosen_filter = filters[filter]
+		chosen_filter = None
+	else:
+		chosen_filter = filters[filter]
 	
 	order = None
 	

@@ -26,6 +26,8 @@ Available filters:
 
 * ```has_timestamp``` - Returns only messages with a timestamp.
 * ```has_location``` - Returns only messages with a location.
+* ```trending``` - Order by trendingness.
+* ```random``` - Add controlled amounts of entropy to your life.
 
 # Appendix 2
 

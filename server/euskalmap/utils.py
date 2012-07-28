@@ -1,3 +1,5 @@
+from random import shuffle
+
 ROWS = 2
 BLOCKS_PER_ROW = 5
 ROWS_PER_BLOCK = 2
@@ -78,5 +80,10 @@ def chrono_order(dataset):
 		return dataset # fail gracefully
 		
 	dataset.sort(chrono)
+	
+	return dataset
+	
+def random_order(dataset):
+	shuffle(dataset)
 	
 	return dataset

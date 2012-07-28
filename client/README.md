@@ -28,10 +28,11 @@ euskalMap CLI is the reference implementation for the euskalMap API.
 
 ## Appendix 1
 Available filters:
+
 	* ```timestamp``` - Only shows messages with a timestamp.
 	* ```location``` - Only shows messages with a location.
 	* ```trending``` - Shows only messages that have comments, ordered by trendingness.
-
+	* ```random``` - Add a controlled quantity of entropy to your life.
 ## Example session
 
 	$ python client.py

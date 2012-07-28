@@ -28,7 +28,8 @@ def show(arg):
 		additional_arguments =	{
 									'timestamp': 'has_timestamp',
 									'location': 'has_location',
-									'trending': 'trending'
+									'trending': 'trending',
+									'random': 'random'
 								}
 		local_args = ""
 	
