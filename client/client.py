@@ -23,7 +23,6 @@ def show(arg):
 				request_error(data.status_code, data.text)
 
 			data = json.loads(data.text)
-			
 			message_printer(data)
 	
 		additional_arguments =	{
@@ -60,6 +59,24 @@ def show(arg):
 				
 				full_url = base_messages + local_args
 				print_data(full_url)
+			
+			elif arg[0] == "near":
+				base_near = base_messages + "/near/"
+				
+				if len(arg[1]) == 5:
+					letters, numbers = get_location(arg[1])
+					radius = 0
+					
+					if len(arg) == 3:
+						radius = int(arg[2])
+					
+					full_url = base_near + letters + "-" + numbers + ("/" + str(radius) if radius > 0 else "")
+					print_data(full_url)
+					
+				else:
+					print "You must specify a location."
+				
+			
 			else:
 				print "I'm sorry Bill, I'm afraid I can't let you do that."
 				
@@ -155,6 +172,9 @@ while True:
 	command = shlex.split(raw_input("eM $ "))
 	
 	if command[0] in commands.keys():
-		commands[command[0]](command[1:])
+		try:
+			commands[command[0]](command[1:])
+		except Exception, e:
+			print "Exception: " + str(e)
 	else:
 		help(None)

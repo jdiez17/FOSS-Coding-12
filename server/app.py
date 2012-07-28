@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask.ext.sqlalchemy import SQLAlchemy
 from euskalmap.database import db_session, db_unique
 from euskalmap.models import Message, Location, AbuseNotice
+from euskalmap.utils import get_near
 
 from sqlalchemy import or_, and_
 import json, datetime
@@ -41,6 +42,21 @@ def get_filtered_messages(format, filter, source, filter_only=False):
 def messages_by_location(format, letters, numbers, filter):
 	l = db_unique(Location, letters=letters, numbers=numbers)
 	return get_filtered_messages(format, filter, l.messages)
+
+def get_messages_near(format, letters, numbers, radius=1):
+	locs = get_near(letters, numbers, radius)
+	
+	first = True
+	for loc in locs:
+		l = db_unique(Location, letters=loc[0], numbers=loc[1])
+		local_filter = Message.location == l
+		if first:
+			filter = local_filter
+			first = False
+		else:
+			filter = or_(filter, local_filter)
+	
+	return filter_and_output(Message.query, filter, format)
 	
 @app.route('/<format>/messages')
 def all_messages(format):
@@ -106,6 +122,14 @@ def send_message(format):
 			
 		return "Done."
 
+@app.route('/<format>/messages/near/<letters>-<int:numbers>')
+def messages_near(format, letters, numbers):
+	return get_messages_near(format, letters, numbers)
+
+@app.route('/<format>/messages/near/<letters>-<int:numbers>/<int:radius>')
+def messages_near_radius(format, letters, numbers, radius):
+	return get_messages_near(format, letters, numbers, radius)
+		
 @app.route('/<format>/report', methods=['POST'])
 def add_report(format):
 	id = 0
