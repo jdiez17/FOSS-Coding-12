@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask.ext.sqlalchemy import SQLAlchemy
 from euskalmap.database import db_session, db_unique
 from euskalmap.models import Message, Location
@@ -55,6 +55,10 @@ def location_messages(format, letters, numbers):
 def location_messages_filtered(format, letters, numbers, filter):
 	l = db_unique(Location, letters=letters, numbers=numbers)
 	return get_filtered_messages(format, filter, l.messages)
+
+@app.route('/<format>/send', methods=['POST'])
+def send_message(format):
+	return "lol", 400
 	
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', debug=True)

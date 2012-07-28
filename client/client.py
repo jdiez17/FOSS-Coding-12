@@ -1,5 +1,5 @@
 import requests, shlex, sys, json
-from utils import message_printer
+from utils import message_printer, get_location
 
 APIBASE = "http://s.jdiez.me:5000/json/"
 
@@ -11,11 +11,17 @@ def help(arg):
 	print
 	print ', '.join(commands.keys()) # weird python syntax. lol
 
+def request_error(code, response):
+	print "! API returned code " + str(code) + " and data:"
+	print response
 	
 def show(arg):
 	def messages(arg):
 		def print_data(url):
 			data = requests.get(url)
+			if data.status_code != 200:
+				request_error(data.status_code, data.text)
+
 			data = json.loads(data.text)
 			
 			message_printer(data)
@@ -32,8 +38,7 @@ def show(arg):
 			print_data(base_messages)
 		else:
 			if len(arg[0]) == 5:
-				letters = arg[0][0:2]
-				numbers = arg[0][3:]
+				letters, numbers = get_location(arg[0])
 				
 				discriminator = "/" + letters + "-" + numbers
 				
@@ -50,7 +55,13 @@ def show(arg):
 				
 				full_url = base_messages + discriminator + local_args
 				print_data(full_url)
+			elif arg[0] in additional_arguments.keys():
+				local_args = "/" + additional_arguments[arg[0]]
 				
+				full_url = base_messages + local_args
+				print_data(full_url)
+			else:
+				print "I'm sorry Bill, I'm afraid I can't let you do that."
 				
 	def abusenotices(msg):
 		print "showing abuse notices"
@@ -68,9 +79,32 @@ def show(arg):
 def quit(arg):
 	sys.exit(0)
 	
+def send(arg):
+		base_send = APIBASE + "send"
+
+		letters = None
+		numbers = 0
+		
+		message = arg[0] 
+		if len(arg) > 1:
+			if len(arg[1]) == 5:
+				letters, numbers = get_location(arg[1])
+			
+		payload = {'message': message}
+		if letters != None:
+			payload['location'] = {'letters': letters, 'numbers': numbers}
+		response = requests.post(base_send, data=payload)
+		
+		if response.status_code != 200:
+			request_error(response.status_code, response.text)
+			return
+			
+		print "Sent OK!" 
+
 commands = 	{
 				'help': help,
 				'show': show,
+				'send': send,
 				'quit': quit,
 			}
 

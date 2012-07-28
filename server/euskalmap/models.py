@@ -9,6 +9,8 @@ class Location(Base):
 	numbers = Column(Integer)
 	
 	def __init__(self, letters, numbers):
+		if len(letters) > 2: 
+			raise Exception('Too many letters.')
 		self.letters = letters
 		self.numbers = numbers
 	
