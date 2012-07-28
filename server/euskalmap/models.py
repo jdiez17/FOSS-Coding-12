@@ -38,6 +38,7 @@ class Message(Base):
 	
 	def serialize(self):
 		return {
+					'id': self.id,
 					'message': self.message, 
 					'location': self.location.serialize() if self.location else None, 
 					'timestamp': self.timestamp.strftime("%s") if self.timestamp else None
