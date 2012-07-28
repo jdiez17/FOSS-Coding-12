@@ -43,21 +43,25 @@ def messages_by_location(format, letters, numbers, filter):
 	l = db_unique(Location, letters=letters, numbers=numbers)
 	return get_filtered_messages(format, filter, l.messages)
 
-def get_messages_near(format, letters, numbers, radius=1):
-	locs = get_near(letters, numbers, radius)
-	
+def generate_location_filter(locs):
 	first = True
 	for loc in locs:
+		print loc[0] + "-" + str(loc[1])
 		l = db_unique(Location, letters=loc[0], numbers=loc[1])
 		local_filter = Message.location == l
 		if first:
 			filter = local_filter
 			first = False
 		else:
-			filter = or_(filter, local_filter)
+			filter = or_(filter, local_filter)	
+	return filter
+	
+def get_messages_near(format, letters, numbers, radius=1):
+	locs = get_near(letters, numbers, radius)
+	filter = generate_location_filter(locs)
 	
 	return filter_and_output(Message.query, filter, format)
-	
+			
 @app.route('/<format>/messages')
 def all_messages(format):
 	return filter_and_output(Message.query, None, format)
@@ -81,17 +85,7 @@ def get_bulk_messages(format):
 		return "You must supply some locations.", 400
 	else:
 		locs = json.loads(request.form['locations'])
-		
-		first = True
-		for loc in locs:
-			l = db_unique(Location, letters=loc[0], numbers=loc[1])
-			local_filter = Message.location == l
-			if first:
-				filter = local_filter
-				first = False
-			else:
-				filter = or_(filter, local_filter)
-		
+		filter = generate_location_filter(locs)
 		return filter_and_output(Message.query, filter, format)
 	
 	
