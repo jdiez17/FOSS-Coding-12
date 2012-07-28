@@ -17,6 +17,16 @@ def message_printer(data):
 	for i in data:
 		message_beautifier(i)
 
+def reports_printer(data):
+	def report_beautifier(report):
+		out = " * [#" + str(report['id']) + "] <Message #" + str(report['message']['id']) + " '" + report['message']['message'] + "'>"
+
+		if report['comment'] != None:
+			out += " '" + report['comment'] + "'"
+		print out
+		
+	for report in data:
+		report_beautifier(report)
 """
 		AA1		AA2		AA3		AA4
 		AB1		AB2		AB3		AB4

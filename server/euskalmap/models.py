@@ -59,3 +59,10 @@ class AbuseNotice(Base):
 
 	def __repr__(self):
 		return '<AbuseNotice for message %r (%s)>' % (self.message.message, self.comment)
+		
+	def serialize(self):
+		return	{
+					'id': self.id,
+					'message': self.message.serialize(),
+					'comment': self.comment
+				}

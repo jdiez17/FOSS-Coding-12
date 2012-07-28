@@ -1,5 +1,5 @@
 import requests, shlex, sys, json
-from utils import message_printer, get_location, gen_map, prettyprint_map
+from utils import message_printer, get_location, gen_map, prettyprint_map, reports_printer
 
 APIBASE = "http://s.jdiez.me:5000/json/"
 
@@ -81,11 +81,17 @@ def show(arg):
 				print "I'm sorry Bill, I'm afraid I can't let you do that."
 				
 	def abusenotices(msg):
-		print "showing abuse notices"
+		base_reports = APIBASE + "reports/get"
+		response = requests.get(base_reports)
+		if response.status_code != 200:
+			return request_error(response.status_code, response.text)
+		
+		notices = json.loads(response.text)
+		reports_printer(notices)
 		
 	modes =	{
 				'messages': messages,
-				'abuse': abusenotices
+				'reports': abusenotices
 			}
 	
 	if arg[0] in modes.keys():
@@ -139,7 +145,7 @@ def map(arg):
 	prettyprint_map(locs)
 
 def report(arg):
-	base_report = APIBASE + "report"
+	base_report = APIBASE + "reports/post"
 	
 	if int(arg[0]) == 0:
 		print "You must choose a message to report."

@@ -124,7 +124,7 @@ def messages_near(format, letters, numbers):
 def messages_near_radius(format, letters, numbers, radius):
 	return get_messages_near(format, letters, numbers, radius)
 		
-@app.route('/<format>/report', methods=['POST'])
+@app.route('/<format>/reports/post', methods=['POST'])
 def add_report(format):
 	id = 0
 	message = ""
@@ -150,6 +150,10 @@ def add_report(format):
 		return "Abuse report stored."
 	except:
 		return "DB error", 500
+
+@app.route('/<format>/reports/get')
+def get_reports(format):
+	return filter_and_output(AbuseNotice.query, None, format)
 		
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', debug=True)
