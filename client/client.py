@@ -90,9 +90,9 @@ def send(arg):
 			if len(arg[1]) == 5:
 				letters, numbers = get_location(arg[1])
 			
-		payload = {'message': message}
-		if letters != None:
-			payload['location'] = {'letters': letters, 'numbers': numbers}
+		payload = {'message': message, 'location_letters': letters, 'location_numbers': numbers}
+		
+		print payload
 		response = requests.post(base_send, data=payload)
 		
 		if response.status_code != 200:

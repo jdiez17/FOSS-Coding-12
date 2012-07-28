@@ -3,7 +3,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from euskalmap.database import db_session, db_unique
 from euskalmap.models import Message, Location
 
-import json
+import json, datetime
 
 app = Flask(__name__)
 
@@ -58,7 +58,30 @@ def location_messages_filtered(format, letters, numbers, filter):
 
 @app.route('/<format>/send', methods=['POST'])
 def send_message(format):
-	return "lol", 400
+	if not 'message' in request.form.keys():
+		return "Missing message", 400
+	else:
+		message = request.form['message']
+		l = None
+		d = None
+		
+		if 'location_letters' in request.form.keys():
+			try:
+				l = db_unique(Location, letters=request.form['location_letters'], numbers=int(request.form['location_numbers']))
+			except Exception, e:
+				return str(e), 400
+		
+		if 'timestamp' in request.form.keys():
+			d = datetime.datetime.fromtimestamp(int(request.form['timestamp']))
+		
+		try:
+			m = Message(message, l, d)
+			db_session.add(m)
+			db_session.commit()
+		except Exception, e:
+			return str(e), 400
+			
+		return "Done."
 	
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', debug=True)
