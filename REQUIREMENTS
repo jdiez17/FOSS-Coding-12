@@ -2,3 +2,4 @@
 * flask (easy_install flask)
 * mysql server 
 * flask.ext.sqlalchemy
+* python-mysqldb
