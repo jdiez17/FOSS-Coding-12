@@ -1,7 +1,9 @@
 import requests, shlex, sys, json
 from utils import message_printer, get_location, gen_map, prettyprint_map, reports_printer, comments_printer
+from utils import config
 
 APIBASE = "http://s.jdiez.me:5000/json/"
+APIBASE = config.get("api", "base")
 
 print "euskalMap CLI consumer - v.0.1"
 print

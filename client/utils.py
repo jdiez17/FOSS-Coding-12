@@ -1,4 +1,7 @@
-import datetime
+import datetime, ConfigParser
+
+config = ConfigParser.ConfigParser()
+config.readfp(open('config.ini'))
 
 def get_location(var):
 	return var[0:2], var[3:]
@@ -57,10 +60,10 @@ def comments_printer(data):
 		
 """
 
-ROWS = 2
-BLOCKS_PER_ROW = 5
-ROWS_PER_BLOCK = 2
-COLS_PER_BLOCK = 2
+ROWS = int(config.get("party", "rows"))
+BLOCKS_PER_ROW = int(config.get("party", "blocks_per_row"))
+ROWS_PER_BLOCK = int(config.get("party", "rows_per_block"))
+COLS_PER_BLOCK = int(config.get("party", "cols_per_block"))
 
 def prettyprint_map(map):
 	c_megarow = "A"
