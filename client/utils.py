@@ -12,6 +12,8 @@ def message_printer(data):
 		if message['location'] != None:
 			out += " on " + message['location']['letters'] + "-" + str(message['location']['numbers'])
 			
+		out += ". " + str(message['comments']) + " comments."
+			
 		print out
 
 	for i in data:
@@ -27,6 +29,15 @@ def reports_printer(data):
 		
 	for report in data:
 		report_beautifier(report)
+
+def comments_printer(data):
+	def comment_beautifier(comment):
+		out = " * [#" + str(comment['id']) + "] " + comment['comment']
+		print out
+	
+	for comment in data:
+		comment_beautifier(comment)
+		
 """
 		AA1		AA2		AA3		AA4
 		AB1		AB2		AB3		AB4

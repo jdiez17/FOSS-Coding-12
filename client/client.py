@@ -1,5 +1,5 @@
 import requests, shlex, sys, json
-from utils import message_printer, get_location, gen_map, prettyprint_map, reports_printer
+from utils import message_printer, get_location, gen_map, prettyprint_map, reports_printer, comments_printer
 
 APIBASE = "http://s.jdiez.me:5000/json/"
 
@@ -169,6 +169,47 @@ def report(arg):
 			return request_error(response.status_code, response.text)
 		
 		print "Abuse report received."
+
+def comment(arg):
+	base_comment = APIBASE + "comments"
+	
+	def post(arg):
+		if len(arg) != 2:
+			print "You must supply a message id and a comment."
+			return
+			
+		base_post = base_comment + "/post"
+		payload = {'id': int(arg[0]), 'comment': arg[1]}
+		
+		response = requests.post(base_post, data=payload)
+		if response.status_code != 200:
+			return request_error(response.status_code, response.text)
+		
+		print "Comment sent OK!"
+		
+	def view(arg):
+		if len(arg) != 1:
+			print "You must only specify the message id"
+			return
+		
+		base_view = base_comment + "/get/"
+		id = int(arg[0])
+		
+		response = requests.get(base_view + str(id))
+		if response.status_code != 200:
+			return request_error(response.status_code, response.text)
+		
+		data = json.loads(response.text)
+		comments_printer(data)
+	
+	modes = 	{
+					'post': post,
+					'view': view
+				}
+	if arg[0] not in modes.keys():
+		print "Unrecognized item."
+		return
+	modes[arg[0]](arg[1:])
 	
 commands = 	{
 				'help': help,
@@ -176,6 +217,7 @@ commands = 	{
 				'send': send,
 				'map': map,
 				'report': report,
+				'comments': comment,
 				'quit': quit,
 			}
 	

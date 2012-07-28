@@ -1,7 +1,7 @@
 from flask import Flask, request
 from flask.ext.sqlalchemy import SQLAlchemy
 from euskalmap.database import db_session, db_unique
-from euskalmap.models import Message, Location, AbuseNotice
+from euskalmap.models import Message, Location, AbuseNotice, Comment
 from euskalmap.utils import get_near
 
 from sqlalchemy import or_, and_
@@ -155,6 +155,40 @@ def add_report(format):
 @app.route('/<format>/reports/get')
 def get_reports(format):
 	return filter_and_output(AbuseNotice.query, None, format)
+
+@app.route('/<format>/comments/post', methods=['POST'])
+def post_comment(format):
+	if not "id" in request.form.keys():
+		return "You must specify the message.", 400
+	if not "comment" in request.form.keys():
+		return "You must specify the comment", 400
+	
+	id = int(request.form['id'])
+	comment = request.form['comment']
+	
+	try:
+		m = Message.query.filter_by(id=id).one()
+	except Exception, e:
+		return str(e), 400
+	
+	c = Comment(m, comment)
+	db_session.add(c)
+	
+	try:
+		db_session.commit()
+	except Exception, e:
+		return "DB error", 400
 		
+	return "Comment stored."
+
+@app.route('/<format>/comments/get/<int:id>')
+def get_comments(format, id):
+	try:
+		m = Message.query.filter_by(id=id).one()
+	except Exception, e:
+		return str(e), 400
+		
+	return filter_and_output(m.comments, None, format)
+	
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', debug=True)

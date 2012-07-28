@@ -43,9 +43,31 @@ class Message(Base):
 					'id': self.id,
 					'message': self.message, 
 					'location': self.location.serialize() if self.location else None, 
-					'timestamp': self.timestamp.strftime("%s") if self.timestamp else None
+					'timestamp': self.timestamp.strftime("%s") if self.timestamp else None,
+					'comments': self.comments.count()
 				}		
+
+class Comment(Base):
+	__tablename__ = 'comments'
+	id = Column(Integer, primary_key=True)
+	message_id = Column(Integer, ForeignKey('messages.id'))
+	message = relationship('Message', backref=backref('comments', lazy='dynamic'))
+	comment = Column(Text)
 	
+	def __init__(self, message, text=None):
+		self.message = message
+		self.comment = text
+
+	def __repr__(self):
+		return '<Comment for message %r (%s)>' % (self.message.message, self.comment)
+		
+	def serialize(self):
+		return	{
+					'id': self.id,
+					'message_id': self.message.id,
+					'comment': self.comment
+				}
+				
 class AbuseNotice(Base):
 	__tablename__ = 'abuse_notices'
 	id = Column(Integer, primary_key=True)
