@@ -22,6 +22,11 @@ euskalMap CLI is the reference implementation for the euskalMap API.
 
 * ```quit``` - Quits the client.
 
+## Appendix 1
+Available filters:
+	* ```timestamp``` - Only shows messages with a timestamp.
+	* ```location``` - Only shows messages with a location.
+
 ## Example session
 
 	$ python client.py
