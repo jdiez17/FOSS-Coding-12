@@ -20,13 +20,17 @@ euskalMap CLI is the reference implementation for the euskalMap API.
 
 * ```report id [reason]``` - Generates abuse notice for message id ```id```, with the optional reason ```reason```.
 	* ```report 1337 "I find this message very offensive."```
-
+* ```comments [action]```
+	* ```comments post id message```
+		* ```comments post 1337 "I think this FOSS Coding entry should win.``` 
+	* ```comments view id```
 * ```quit``` - Quits the client.
 
 ## Appendix 1
 Available filters:
 	* ```timestamp``` - Only shows messages with a timestamp.
 	* ```location``` - Only shows messages with a location.
+	* ```trending``` - Shows only messages that have comments, ordered by trendingness.
 
 ## Example session
 
@@ -53,4 +57,10 @@ Available filters:
 	Abuse report received.
 	eM $ show reports
 	* [#3] <Message #37 'I am writing the euskalMap documentation'> 'I find this message very offensive.'
+	eM $ comments post 37 "I think this FOSS entry should win."
+	Comment sent OK!
+	eM $ show messages near AB-02
+	* [#37] 'I am writing the euskalMap documentation' on AA-2. 1 comments.
+	eM $ comments view 37
+	* [#4] I think this FOSS entry should win.
 	eM $ quit

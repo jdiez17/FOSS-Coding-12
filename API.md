@@ -16,6 +16,10 @@
 * ```/<format>/reports/post``` - POST ```{'id': id, ['message': message]}``` - Posts a report abuse regarding message identified by ```id``` with an optional comment.
 * ```/<format>/reports/get``` - GET - Gets the abuse reports. 
 
+## Comments
+* ```/<format>/comments/post``` - POST ```{'id': id, 'message': message}``` - Posts a comment on message identified by ```id```
+* ```/<format>/comments/get/<id>``` - GET - Gets the comments for a given message
+
 # Appendix 1
 
 Available filters:
