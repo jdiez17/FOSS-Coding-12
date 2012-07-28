@@ -23,14 +23,15 @@ def output_data(format, data):
 	
 	return formatters[format](data)
 	
-def filter_and_output(data, filter, format, filter_only=False):
-	new_data = [i.serialize() for i in data.filter(filter)]
+def filter_and_output(data, filter, format, filter_only=False, order_by=None):
+	new_data = [i.serialize() for i in data.filter(filter).order_by(order_by)]
 	return output_data(format, new_data) if not filter_only else new_data
 
 def get_filtered_messages(format, filter, source, filter_only=False):
 	filters = 	{
 					'has_location': Message.location != None,
 					'has_timestamp': Message.timestamp != None,
+					'trending': Message.comments.any()
 				}
 	
 	if not filter in filters.keys():

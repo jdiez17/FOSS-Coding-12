@@ -27,7 +27,8 @@ def show(arg):
 	
 		additional_arguments =	{
 									'timestamp': 'has_timestamp',
-									'location': 'has_location'
+									'location': 'has_location',
+									'trending': 'trending'
 								}
 		local_args = ""
 	
@@ -80,7 +81,7 @@ def show(arg):
 			else:
 				print "I'm sorry Bill, I'm afraid I can't let you do that."
 				
-	def abusenotices(msg):
+	def abusenotices(arg):
 		base_reports = APIBASE + "reports/get"
 		response = requests.get(base_reports)
 		if response.status_code != 200:
@@ -88,7 +89,7 @@ def show(arg):
 		
 		notices = json.loads(response.text)
 		reports_printer(notices)
-		
+
 	modes =	{
 				'messages': messages,
 				'reports': abusenotices
