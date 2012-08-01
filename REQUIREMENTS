@@ -6,8 +6,17 @@ API Server
 * mysql server 
 * flask.ext.sqlalchemy (easy_install flask-sqlalchemy)
 * python-mysqldb (mysql_python on Arch Linux)
+* pyredis (easy_install redis) [optional]
+* redis server [optional, needed for realtime support]
 
 CLI consumer
 =============
 
 * requests (easy_install requests)
+
+Pyntas bridge
+=============
+
+* node.js
+* node_redis (npm install redis)
+* socket.io (npm install socket.io)
