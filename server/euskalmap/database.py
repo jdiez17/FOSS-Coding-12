@@ -13,6 +13,12 @@ db_session = scoped_session(sessionmaker(autocommit=False,
 Base = declarative_base()
 Base.query = db_session.query_property()
 
+using_redis = config.has_section("redis")
+r = None
+if using_redis:
+	import redis
+	r = redis.StrictRedis(config.get('redis', 'server'), int(config.get('redis', 'port')))
+	
 def init_db():
     import euskalmap.models
     Base.metadata.create_all(bind=engine)

@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship, backref
-from euskalmap.database import Base
+from euskalmap.database import Base, using_redis, r
+from euskalmap.config import config
+import json
 
 class Location(Base):
 	__tablename__ = 'locations'
@@ -34,6 +36,9 @@ class Message(Base):
 		self.message = message
 		self.location = location
 		self.timestamp = timestamp
+		
+		if using_redis:
+			r.publish(config.get('redis', 'channel'), json.dumps(self.serialize()))
 	
 	def __repr__(self):
 		return '<Message %r (on %r) at %r>' % (self.message, self.location, self.timestamp)
