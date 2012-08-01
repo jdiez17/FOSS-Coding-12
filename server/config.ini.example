@@ -1,6 +1,6 @@
 [database]
 user = euskalmap
-password = euskalmap
+pw = euskalmap
 database = euskalmap
 host = localhost
 
