@@ -6,10 +6,10 @@ from euskalmap.models import Message
 print " --- read ALL the messages"
 
 for m in Message.query.all():
-	print m
-	
+    print m
+    
 print " --- only with location data"
 # read messages with location data
 
 for m in Message.query.filter(Message.location != None):
-	print m
+    print m

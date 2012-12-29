@@ -16,9 +16,9 @@ Base.query = db_session.query_property()
 using_redis = config.has_section("redis")
 r = None
 if using_redis:
-	import redis
-	r = redis.StrictRedis(config.get('redis', 'server'), int(config.get('redis', 'port')))
-	
+    import redis
+    r = redis.StrictRedis(config.get('redis', 'server'), int(config.get('redis', 'port')))
+    
 def init_db():
     import euskalmap.models
     Base.metadata.create_all(bind=engine)
@@ -28,7 +28,7 @@ def db_unique(model, **kwargs):
     if instance:
         return instance
     else:
-		instance = model(**kwargs)
-		db_session.add(instance)
-		db_session.commit()
-		return instance
+        instance = model(**kwargs)
+        db_session.add(instance)
+        db_session.commit()
+        return instance
