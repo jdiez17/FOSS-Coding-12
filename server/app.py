@@ -14,9 +14,9 @@ def shutdown_session(exception=None):
     db_session.remove()
 
 def output_data(format, data):
-    formatters =     {
-                    'json': json.dumps
-                    }
+    formatters = {
+        'json': json.dumps
+    }
     
     if not format in formatters.keys():
         return "Unsupported format", 400
@@ -33,16 +33,16 @@ def filter_and_output(data, filter, format, filter_only=False, reorder=None):
     return output_data(format, new_data) if not filter_only else new_data
 
 def get_filtered_messages(format, filter, source, filter_only=False):
-    filters =     {
-                    'has_location': Message.location != None,
-                    'has_timestamp': Message.timestamp != None,
-                    'trending': Message.comments.any()
-                }
+    filters = {
+        'has_location': Message.location != None,
+        'has_timestamp': Message.timestamp != None,
+        'trending': Message.comments.any()
+    }
     
-    orders =    {
-                    'trending': trending_order,
-                    'random': random_order
-                }
+    orders = {
+        'trending': trending_order,
+        'random': random_order
+    }
     
     if not filter in filters.keys():
         chosen_filter = None
